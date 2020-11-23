@@ -38,7 +38,7 @@ describe('AS Test Suite', () => {
         expect(response.data.payload.journal.id).toEqual(journalId)
     })
 
-    it('Get article details', () => {
+    it('Get relationship by article id', () => {
         let response;
         browser.call(() => {
             return AuthorService.getRelationshipWithArticle(articleId, cookie)
