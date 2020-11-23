@@ -1,4 +1,4 @@
-import AlmService from "../functions/alm.functions";
+import AuthorService from "../functions/authorService.functions";
 
 let articleId = 16368017;
 let requestData = {
@@ -11,11 +11,11 @@ let journalId = "8096251";
 let cookie;
 let participantId;
 
-describe('ALM Test Suite', () => {
+describe('AS Test Suite', () => {
     it('Authenticate User', () => {
         let response;
         browser.call(() => {
-            return AlmService.authenticateApi(requestData)
+            return AuthorService.authenticateApi(requestData)
                 .then(data => response = data)
                 .catch(err => console.log(err))
         })
@@ -28,7 +28,7 @@ describe('ALM Test Suite', () => {
     it('Get article details', () => {
         let response;
         browser.call(() => {
-            return AlmService.getArticleDetails(articleId, cookie)
+            return AuthorService.getArticleDetails(articleId, cookie)
                 .then(data => response = data)
                 .catch(err => console.log(err))
         })
@@ -41,7 +41,7 @@ describe('ALM Test Suite', () => {
     it('Get article details', () => {
         let response;
         browser.call(() => {
-            return AlmService.getRelationshipWithArticle(articleId, cookie)
+            return AuthorService.getRelationshipWithArticle(articleId, cookie)
                 .then(data => response = data)
                 .catch(err => console.log(err))
         })
