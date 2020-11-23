@@ -1,26 +1,66 @@
-import Axios from "axios";
-import UserApiService from "../functions/UserApiService.functions";
+import AlmService from "../functions/alm.functions";
 
-describe('My Mock api application', () => {
+let articleId = 16368017;
+let requestData = {
+    "username": "seleniumUatOOOCreate1@mailinator.com",
+    "password": "123456Test",
+    "externalLogin": false
+};
+let articleName = "Selenium-OO-Test-2020-11-20WATuWIwyxK";
+let journalId = "8096251";
+let cookie;
+let participantId;
 
-    it('Get Users from GoRest Api', () => {
+describe('ALM Test Suite', () => {
+    it('Authenticate User', () => {
         let response;
         browser.call(() => {
-            return UserApiService.getUsers()
-            .then(data =>  response = data)
-            .catch(err => console.log(err))
+            return AlmService.authenticateApi(requestData)
+                .then(data => response = data)
+                .catch(err => console.log(err))
         })
+        cookie = response.headers["set-cookie"];
+        participantId = response.data.payload.participantId;
         expect(response.status).toEqual(200);
+        expect(response.data.status).toEqual("SUCCESS")
     })
 
-    it('should assert the mock data', () => {
+    it('Get article details', () => {
         let response;
         browser.call(() => {
-          return UserApiService.mockApiGetMethod()
-            .then(data => response = data)
-            .catch(err => console.log(err))
+            return AlmService.getArticleDetails(articleId, cookie)
+                .then(data => response = data)
+                .catch(err => console.log(err))
+        })
+        expect(response.status).toEqual(200);
+        expect(response.data.status).toEqual("SUCCESS")
+        expect(response.data.payload.article.name).toEqual(articleName)
+        expect(response.data.payload.journal.id).toEqual(journalId)
+    })
+
+    it('Get article details', () => {
+        let response;
+        browser.call(() => {
+            return AlmService.getRelationshipWithArticle(articleId, cookie)
+                .then(data => response = data)
+                .catch(err => console.log(err))
+        })
+        expect(response.status).toEqual(200);
+        let contents = response.data.content;
+        contents.forEach(object => {
+            expect(object.participantId).toEqual(participantId)
+            expect(object.attributes[2].attributeValue).toEqual(requestData.username)
         });
-        expect(response.status).toEqual(200)
-        expect(response.data.message).toEqual("Hello World!!!")
-        });
+    })
+
+    // it('should assert the mock data', () => {
+    //     let response;
+    //     browser.call(() => {
+    //         return UserApiService.mockApiGetMethod()
+    //             .then(data => response = data)
+    //             .catch(err => console.log(err))
+    //     });
+    //     expect(response.status).toEqual(200)
+    //     expect(response.data.message).toEqual("Hello World!!!")
+    // });
 });
